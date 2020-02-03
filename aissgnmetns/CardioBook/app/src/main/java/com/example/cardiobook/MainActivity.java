@@ -16,13 +16,14 @@ public class MainActivity extends AppCompatActivity {
 
     ListView measurementList;
     ArrayAdapter<Measurement> measurementArrayAdapter;
-    public static List<Measurement> DataList;
+    public static ArrayList<Measurement> DataList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DataList = new ArrayList<>();
+//        measurementArrayAdapter = new ArrayAdapter<Measurement>();
     }
 
     public void createRecord(View v){

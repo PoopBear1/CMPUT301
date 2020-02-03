@@ -2,17 +2,15 @@ package com.example.cardiobook;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.graphics.Color;
+
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class AddActivity extends AppCompatActivity {
 
@@ -59,23 +57,35 @@ public class AddActivity extends AppCompatActivity {
         DiastolicPressure = findViewById(R.id.diastolic_pressureText);
         StringDiastolicPressure = DiastolicPressure.getText().toString();
 
-        if (StringTime.length() <= 0 || StringDate.length() <= 0 || StringSystolicPressure.length() <= 0 || StringHearRate.length() <= 0) {
+        if (StringTime.length() <= 0 || StringDate.length() <= 0 || StringSystolicPressure.length() <= 0 || StringHearRate.length() <= 0
+                || StringDiastolicPressure.length() <= 0) {
             Toast.makeText(AddActivity.this,"Invalid inputs",Toast.LENGTH_SHORT).show();
             return;
         }
 
 
+        String datePattern = "^([12]\\d{3}-([0][1-9][1][0-2])-([3][01]|[12]\\d|[0][1-9]))$";
+        Pattern pattern1 = Pattern.compile(datePattern);
+        Matcher matcher1 = pattern1.matcher(StringTime);
+
+
+        String timePattern = "^(([2][0-3]|[01]\\d):([0-5]\\d))$";
+        Pattern pattern2 = Pattern.compile(timePattern);
+        Matcher matcher2 = pattern2.matcher(StringTime);
+
+        if (matcher1.matches() == false || matcher2.matches() == false ){
+            Toast.makeText(AddActivity.this,"Invalid format",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         IntSystolicPressure = Integer.parseInt(StringSystolicPressure);
         IntDiastolicPressure = Integer.parseInt(StringDiastolicPressure);
         IntHeartRate = Integer.parseInt(StringHearRate);
 
-        if (90 > IntSystolicPressure || IntSystolicPressure > 140){
-            SystolicPressure.setTextColor(Color.RED);
-        }
+        if ( IntDiastolicPressure <= 0 || IntSystolicPressure <= 0 || IntHeartRate <= 0){
 
-        if (60 > IntDiastolicPressure || IntDiastolicPressure > 90){
-            DiastolicPressure.setTextColor(Color.RED);
-            System.out.println("Abnormal DiastolicPressure");
+            Toast.makeText(AddActivity.this,"Cannot set value <= 0",Toast.LENGTH_SHORT).show();
+            return;
         }
 
         if (StringComment.length() > 20) {
@@ -83,13 +93,6 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-//        System.out.println(StringDate);
-//        System.out.println(StringTime);
-//        System.out.println(StringComment);
-//        System.out.println(IntSystolicPressure);
-//        System.out.println(IntHeartRate);
-//        System.out.println(IntDiastolicPressure);
-//        System.out.println(StringDate);
 
         Measurement measurement = new Measurement(StringDate,StringTime,StringComment,IntSystolicPressure,IntHeartRate,IntDiastolicPressure);
         MainActivity.DataList.add(measurement);
