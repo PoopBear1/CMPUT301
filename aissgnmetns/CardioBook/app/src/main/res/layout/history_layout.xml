@@ -6,45 +6,45 @@
 
     <TextView
         android:id="@+id/HistoryDate"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:text="Date" />
 
     <TextView
         android:id="@+id/HistoryTime"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:text="Time" />
 
     <TextView
         android:id="@+id/HistorySP"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:text="SP" />
 
     <TextView
         android:id="@+id/HistoryDP"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:text="DP" />
 
 
     <TextView
         android:id="@+id/HistoryHeartRate"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
         android:layout_weight="1"
         android:text="HeartRate" />
 
 
     <TextView
         android:id="@+id/HistoryComments"
-        android:layout_width="wrap_content"
-        android:layout_height="82dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_weight="1"
         android:text="Comments" />
 
