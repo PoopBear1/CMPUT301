@@ -3,10 +3,14 @@ package com.example.cardiobook;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,12 +18,18 @@ import java.util.regex.Pattern;
 
 public class AddActivity extends AppCompatActivity {
 
+
+    Button delete;
     EditText comments;
     EditText date;
     EditText time;
     EditText SystolicPressure;
     EditText HeartRate;
     EditText DiastolicPressure;
+
+    String activity;
+
+    int index;
 
     String StringComment;
     String StringDate;
@@ -32,13 +42,49 @@ public class AddActivity extends AppCompatActivity {
     Integer  IntDiastolicPressure;
     Integer IntHeartRate;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add);
+
+        activity = getIntent().getStringExtra("activity");
+
+        if(activity != null && activity.equals("add")){
+            delete =  findViewById(R.id.delete);
+            delete.setVisibility(View.INVISIBLE);
+        }
+
+        if(activity != null && activity.equals("history")){
+            index = getIntent().getIntExtra("index",0);
+            editRecord();
+        }
+    }
+
+    public void editRecord(){
+
+        comments = findViewById(R.id.CommentText);
+        date = findViewById(R.id.DateText);
+        time = findViewById(R.id.TimeText);
+        SystolicPressure = findViewById(R.id.systolic_pressureText);
+        HeartRate = findViewById(R.id.heart_rateText);
+        DiastolicPressure = findViewById(R.id.diastolic_pressureText);
+
+        Measurement measurement = MainActivity.DataList.get(index);
+
+        comments.setText(measurement.getComments());
+        date.setText(measurement.getDate());
+        time.setText(measurement.getTime());
+        SystolicPressure.setText(String.valueOf(measurement.getSystolicPressure()));
+        DiastolicPressure.setText(String.valueOf(measurement.getDiastolicPressure()));
+        HeartRate.setText(String.valueOf(measurement.getHeartRate()));
+
     }
 
     public void Validate(View v){
+
+
         comments = findViewById(R.id.CommentText);
         StringComment = comments.getText().toString();
 
@@ -64,16 +110,16 @@ public class AddActivity extends AppCompatActivity {
         }
 
 
-        String datePattern = "^([12]\\d{3}-([0][1-9][1][0-2])-([3][01]|[12]\\d|[0][1-9]))$";
+        String datePattern = "^([12]\\d{3}-([0][1-9]|[1][0-2])-([3][01]|[12]\\d|[0][1-9]))$";
         Pattern pattern1 = Pattern.compile(datePattern);
-        Matcher matcher1 = pattern1.matcher(StringTime);
+        Matcher matcher1 = pattern1.matcher(StringDate);
 
 
         String timePattern = "^(([2][0-3]|[01]\\d):([0-5]\\d))$";
         Pattern pattern2 = Pattern.compile(timePattern);
         Matcher matcher2 = pattern2.matcher(StringTime);
 
-        if (matcher1.matches() == false || matcher2.matches() == false ){
+        if ( matcher1.matches() == false  ||  matcher2.matches() ==false ){
             Toast.makeText(AddActivity.this,"Invalid format",Toast.LENGTH_SHORT).show();
             return;
         }
@@ -93,11 +139,32 @@ public class AddActivity extends AppCompatActivity {
             return;
         }
 
-
         Measurement measurement = new Measurement(StringDate,StringTime,StringComment,IntSystolicPressure,IntHeartRate,IntDiastolicPressure);
-        MainActivity.DataList.add(measurement);
+        if(activity.equals("history")){
+            MainActivity.DataList.remove(index);
+            MainActivity.DataList.add(index,measurement);
+        }else{
+            MainActivity.DataList.add(measurement);
+        }
+
+        saveData("measurement");
         finish();
 
+    }
+
+    public void saveData(String key){
+        SharedPreferences sharedPreferences = getSharedPreferences("shared preferences",MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        Gson gson = new Gson();
+        String json = gson.toJson(MainActivity.DataList);
+        editor.putString(key,json);
+        editor.apply();
+    }
+
+    public void deleteMeasurement(View v){
+        MainActivity.DataList.remove(index);
+        saveData("measurement");
+        finish();
     }
 
 }
